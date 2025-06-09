@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SurPlus</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #f9f9f9;
+      color: #222;
+    }
+    header {
+      background: linear-gradient(120deg, #1a1a1a, #3b3b3b);
+      color: #fff;
+      text-align: center;
+      padding: 2rem 1rem;
+    }
+    header h1 {
+      font-size: 2.5rem;
+    }
+    nav {
+      position: sticky;
+      top: 0;
+      background: #fff;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      padding: 0.5rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    nav a {
+      text-decoration: none;
+      color: #333;
+      font-weight: bold;
+    }
+    .container {
+      padding: 2rem;
+      max-width: 1000px;
+      margin: auto;
+    }
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      transition: transform 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+    }
+    .card img, .card video, .card iframe {
+      width: 100%;
+      border-radius: 4px;
+      margin-top: 1rem;
+    }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      background: #1a1a1a;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>SurPlus</h1>
+    <p>Comunidad, Cultura y Poder Popular</p>
+  </header>
+  <nav>
+    <a href="#noticias">Noticias</a>
+    <a href="#documentos">Documentos</a>
+    <a href="#referencias">Referencias</a>
+    <a href="#contacto">Contacto</a>
+  </nav>
+  <div class="container">
+    <section id="noticias">
+      <h2>Noticias</h2>
+      <div id="news"></div>
+    </section>
+    <section id="documentos">
+      <h2>Documentos</h2>
+      <div id="docs"></div>
+    </section>
+    <section id="referencias">
+      <h2>Referencias</h2>
+      <div id="refs"></div>
+    </section>
+  </div>
+  <section id="contacto">
+    <footer>
+      <p>Contacto: <a href="mailto:votaelpueblo@proton.me" style="color:#7dd3fc;">votaelpueblo@proton.me</a></p>
+      <p>&copy; 2025 SurPlus – Todos los derechos reservados.</p>
+    </footer>
+  </section>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      fetch('entradas.json')
+        .then(res => res.json())
+        .then(data => {
+          const sections = {
+            noticias: document.getElementById('news'),
+            documentos: document.getElementById('docs'),
+            referencias: document.getElementById('refs')
+          };
+          data.forEach(e => {
+            const div = document.createElement('div');
+            div.className = 'card';
+            div.innerHTML = `
+              <h3>${e.title}</h3>
+              <p><small>${e.date}</small></p>
+              <p><strong>${e.excerpt}</strong></p>
+              <p>${e.content}</p>
+              ${e.media ? mediaHTML(e.media, e.title) : ''}
+            `;
+            sections[e.sec]?.appendChild(div);
+          });
+        });
+    });
+
+    function mediaHTML(url, title) {
+      if (url.includes('youtube.com') || url.includes('youtu.be')) {
+        return `<iframe src="${url}" frameborder="0" allowfullscreen></iframe>`;
+      }
+      const ext = url.split('.').pop().toLowerCase();
+      if (["mp4", "webm", "ogg"].includes(ext)) {
+        return `<video src="${url}" controls></video>`;
+      }
+      return `<img src="${url}" alt="${title}">`;
+    }
+  </script>
+</body>
+</html>
